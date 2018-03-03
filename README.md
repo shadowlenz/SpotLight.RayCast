@@ -1,5 +1,5 @@
 # SpotLight.RayCast
-Raycast and detects nearest objects within a spotlight cone
+Raycast and detects nearest object within a spotlight cone
 
 ![alt text](https://pbs.twimg.com/media/DXYsWNiV4AEzwA2.jpg:large)
 
