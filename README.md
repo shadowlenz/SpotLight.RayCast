@@ -1,5 +1,5 @@
 # SpotLight.RayCast
-Raycast thru a spotlight cone
+Raycast and detects objects within a spotlight cone.
 
 ![alt text](https://pbs.twimg.com/media/DXYsWNiV4AEzwA2.jpg:large)
 
