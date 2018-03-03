@@ -1,6 +1,8 @@
 # SpotLight.RayCast
 Raycast thru a spotlight cone
 
+![alt text](https://pbs.twimg.com/media/DXYsWNiV4AEzwA2.jpg:large)
+
  - Detect Layer: layers it'll grab the closest to.
  - Obsticle Mask Layer: detected go will be ignored if these layers are in front.
  - Detect Facing:
