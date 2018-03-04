@@ -6,6 +6,7 @@ using UnityEngine;
 public class DetectionRayCast : MonoBehaviour {
 
     [Header("detect setup")]
+    public Light _light;
     public LayerMask detectLayer;
     public LayerMask obsticleMaskLayer;
     public enum DetectFacing
@@ -92,10 +93,17 @@ public class DetectionRayCast : MonoBehaviour {
 #endif
 
     }
-
     private void OnValidate()
     {
         if (lostDistance < detectDistance) lostDistance = detectDistance;
+
+        if (_light != null)
+        {
+            sightHeight = 0;
+            detectAngle = _light.spotAngle / 2;
+            detectDistance = _light.range;
+        }
+
     }
     // Update is called once per frame
     void Update () {
@@ -179,7 +187,7 @@ public class DetectionRayCast : MonoBehaviour {
                 if (hitDistance <= clostestDist && Vector3.Angle((hitColliders[i].transform.position - OffsetCenter(transform)).normalized, GetDetectForward()) <= detectAngle && !obsticle)
                 {
                     clostestDist = hitDistance;
-                    clostestActor = hitColliders[i].GetComponent<GameObject>();
+                    clostestActor = hitColliders[i].gameObject;
 
                 }
             }
