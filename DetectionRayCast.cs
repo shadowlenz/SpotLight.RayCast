@@ -102,6 +102,7 @@ public class DetectionRayCast : MonoBehaviour {
             sightHeight = 0;
             detectAngle = _light.spotAngle / 2;
             detectDistance = _light.range;
+            lostDistance = _light.range;
         }
 
     }
