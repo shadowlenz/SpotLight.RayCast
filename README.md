@@ -3,6 +3,8 @@ Raycast and detects nearest object within a spotlight cone
 
 ![alt text](https://pbs.twimg.com/media/DXYsWNiV4AEzwA2.jpg:large)
 
+Can detect if spotlight Light component is in the gameobject. Some values such as detectAngle or distance will be locked and based on spotlight values.
+
  - Detect Layer: layers it'll grab the closest to.
  - Obsticle Mask Layer: detected go will be ignored if these layers are in front.
  - Detect Facing:
@@ -13,6 +15,7 @@ Raycast and detects nearest object within a spotlight cone
  - Lost Distance: Target fully forget past this point if target travels too far away.
  - Detect Angle: Cone spread to detect.
  - Sight Height: Offset height of origin and target.
+ - Target Height: Offset height of target.
 
  - Update Ticker: Per second refresh. Optimization to avoid raycasting every frame.
 
