@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DetectionRayCast : MonoBehaviour {
+public class DetectionRayCast : MonoBehaviour
+{
 
+
+    Light _light;
+    [Header("spotlight component is supported in object. Otherwises uses transform")]
     [Header("detect setup")]
-    public Light _light;
     public LayerMask detectLayer;
     public LayerMask obsticleMaskLayer;
     public enum DetectFacing
@@ -22,7 +25,7 @@ public class DetectionRayCast : MonoBehaviour {
     [Range(0, 180)]
     public float detectAngle = 40;
     public float sightHeight = 1;
-
+    public float targetHeight = 1;
     [Header("updateTicker")]
     public float ticker = 1;
     float _ticker;
@@ -31,6 +34,8 @@ public class DetectionRayCast : MonoBehaviour {
     public GameObject inSightTarget;
     public GameObject detectTarget;
     public float distTarget;
+
+    bool didDetect;
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = new Color(1, 1, 0, 0.1f);
@@ -47,7 +52,7 @@ public class DetectionRayCast : MonoBehaviour {
                 Gizmos.color = new Color(1, 0, 0, 0.5f);
                 Gizmos.DrawSphere(detectTarget.transform.position, 2);
             }
-            Gizmos.DrawLine(OffsetCenter(GetDetectTr()) , OffsetCenter(detectTarget.transform));
+            Gizmos.DrawLine(OffsetCenter(GetDetectTr()), OffsetCenter(detectTarget.transform) - (GetDetectTr().forward) + (Vector3.up * targetHeight));
 
         }
         Gizmos.color = new Color(1, 1, 1, 0.5f);
@@ -77,7 +82,7 @@ public class DetectionRayCast : MonoBehaviour {
             GetDetectForward(),
             GetDetectRight(),
             360,
-            (detectAngle/6 )*( _distTarget/10));
+            (detectAngle / 6) * (_distTarget / 10));
 
         UnityEditor.Handles.DrawSolidArc(OffsetCenter(GetDetectTr()),
             transform.right,
@@ -89,16 +94,16 @@ public class DetectionRayCast : MonoBehaviour {
              GetDetectForward(),
             -detectAngle,
             detectDistance);
-            
+
 #endif
 
     }
     private void OnValidate()
     {
         if (lostDistance < detectDistance) lostDistance = detectDistance;
-
-        if (_light != null)
+        if (GetComponent<Light>() != null && _light != null)
         {
+            _light = GetComponent<Light>();
             sightHeight = 0;
             detectAngle = _light.spotAngle / 2;
             detectDistance = _light.range;
@@ -107,9 +112,33 @@ public class DetectionRayCast : MonoBehaviour {
 
     }
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         TickerUpdate();
+        if (detectTarget != null && !didDetect)
+        {
+            DetectTrigger();
+            didDetect = true;
+        }
+        else if (detectTarget == null && didDetect)
+        {
+            NotDetectTrigger();
+            didDetect = false;
+        }
     }
+
+    void DetectTrigger()
+    {
+
+        print("detect");
+    }
+    void NotDetectTrigger()
+    {
+
+        print("notdetect");
+    }
+
+    //===============
 
     void TickerUpdate() //updated per sec
     {
@@ -127,14 +156,14 @@ public class DetectionRayCast : MonoBehaviour {
     //==detect Tools
     Vector3 OffsetCenter(Transform _tr)
     {
-        if (detectFacing != DetectFacing.TransformForward ) return _tr.position + (GetCam().transform.forward);
-        else return _tr.position + (transform.up * sightHeight) ;
+        if (detectFacing != DetectFacing.TransformForward) return _tr.position + (GetCam().transform.forward);
+        else return _tr.position + (transform.up * sightHeight);
         //return _tr.position + (transform.up * sightHeight) + (transform.forward * 0.5f);
 
     }
     Camera GetCam()
     {
-       if (Application.isPlaying) return  Camera.main;
+        if (Application.isPlaying) return Camera.main;
         else return Camera.current;
 
     }
@@ -166,7 +195,7 @@ public class DetectionRayCast : MonoBehaviour {
 
         Collider[] hitColliders;
         hitColliders = Physics.OverlapSphere(OffsetCenter(transform), detectDistance, detectLayer);
-        float clostestDist = detectDistance+1;
+        float clostestDist = detectDistance + 1;
         GameObject clostestActor = null;
 
         for (int i = 0; i < hitColliders.Length; i++)
@@ -184,7 +213,7 @@ public class DetectionRayCast : MonoBehaviour {
                 //print(Vector3.Angle((hitColliders[i].transform.position - OffsetCenter(transform)).normalized, GetDetectForward()));
 
                 bool obsticle = false;
-                obsticle = Physics.Raycast(OffsetCenter(GetDetectTr()), (OffsetCenter(hitColliders[i].transform) - OffsetCenter(GetDetectTr())).normalized, hitDistance, obsticleMaskLayer & ~detectLayer);
+                obsticle = Physics.Raycast(OffsetCenter(GetDetectTr()), (OffsetCenter(hitColliders[i].transform) - OffsetCenter(GetDetectTr()) + (Vector3.up * targetHeight)).normalized, hitDistance - 1, obsticleMaskLayer & ~detectLayer);
                 if (hitDistance <= clostestDist && Vector3.Angle((hitColliders[i].transform.position - OffsetCenter(transform)).normalized, GetDetectForward()) <= detectAngle && !obsticle)
                 {
                     clostestDist = hitDistance;
@@ -210,7 +239,7 @@ public class DetectionRayCast : MonoBehaviour {
             }
             else
             {
-               if (inSightTarget != null) detectTarget = inSightTarget;
+                if (inSightTarget != null) detectTarget = inSightTarget;
             }
         }
     }
