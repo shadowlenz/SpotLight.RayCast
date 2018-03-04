@@ -158,7 +158,7 @@ public class DetectionRayCast : MonoBehaviour {
         Collider[] hitColliders;
         hitColliders = Physics.OverlapSphere(OffsetCenter(transform), detectDistance, detectLayer);
         float clostestDist = detectDistance+1;
-        Actor clostestActor = null;
+        GameObject clostestActor = null;
 
         for (int i = 0; i < hitColliders.Length; i++)
         {
@@ -179,7 +179,7 @@ public class DetectionRayCast : MonoBehaviour {
                 if (hitDistance <= clostestDist && Vector3.Angle((hitColliders[i].transform.position - OffsetCenter(transform)).normalized, GetDetectForward()) <= detectAngle && !obsticle)
                 {
                     clostestDist = hitDistance;
-                    clostestActor = hitColliders[i].GetComponent<Actor>();
+                    clostestActor = hitColliders[i].GetComponent<GameObject>();
 
                 }
             }
